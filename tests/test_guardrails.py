@@ -1,5 +1,6 @@
 import json
 
+import requests
 from conftest import make_event
 
 from triagedesk.ai.guardrails import build_user_prompt, neutralise, select_evidence, validate_reply
@@ -95,3 +96,18 @@ def test_unparseable_model_reply_falls_back_to_offline_summary():
     assert summary.generator == OfflineSummariser.name
     assert "failed validation" in summary.validation_notes[-1]
     assert session.sent["messages"][0]["role"] == "system"
+
+
+class RateLimitedSession:
+    def post(self, url, headers, json, timeout):
+        response = requests.Response()
+        response.status_code = 429
+        response.url = url
+        return response
+
+
+def test_http_status_is_reported_when_the_model_request_fails():
+    summariser = LLMSummariser("https://example.invalid/v1", "key", "model", session=RateLimitedSession())
+    summary = summariser.summarise(brute_force_incident())
+    assert summary.generator == OfflineSummariser.name
+    assert summary.validation_notes[-1] == "Offline summary used: the model request failed (HTTP 429)."

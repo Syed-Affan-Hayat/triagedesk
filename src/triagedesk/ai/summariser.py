@@ -128,6 +128,9 @@ class LLMSummariser:
         allowed = {event.event_id for event in evidence}
         try:
             reply = self._complete(build_user_prompt(incident, evidence))
+        except requests.HTTPError as exc:
+            status = exc.response.status_code if exc.response is not None else "unknown"
+            return self._fallback_with(incident, f"the model request failed (HTTP {status})")
         except requests.RequestException as exc:
             return self._fallback_with(incident, f"the model request failed ({type(exc).__name__})")
         except (KeyError, IndexError, TypeError, ValueError):
