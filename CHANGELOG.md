@@ -16,7 +16,9 @@ All notable changes to this project are documented here. The format follows
 - IP reputation enrichment through AbuseIPDB, with an offline mock provider for the samples.
 - Transparent alert scoring, P1 to P4 priorities and incident grouping by source address.
 - Offline incident summaries, and language model summaries behind prompt injection guardrails.
+- Fallback notes that record the HTTP status code when a model request fails.
 - Markdown incident report structured on PICERL, and JSON export.
 - Command-line interface and Streamlit dashboard.
 - Synthetic sample data generator with six planted attack scenarios.
 - Test suite, continuous integration, Dockerfile and Render Blueprint.
+- Deployment on Render: <https://triagedesk-f5tt.onrender.com/>.

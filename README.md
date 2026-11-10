@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/Syed-Affan-Hayat/triagedesk/actions/workflows/ci.yml/badge.svg)](https://github.com/Syed-Affan-Hayat/triagedesk/actions/workflows/ci.yml)
 
+**Live demo:** <https://triagedesk-f5tt.onrender.com/> (the free instance sleeps when idle; the first load can take about a minute)
+
 Evidence-grounded triage of SSH and web server logs. TriageDesk parses raw logs, runs readable
 detection rules mapped to MITRE ATT&CK, enriches suspicious addresses with threat intelligence,
 prioritises alerts with a transparent score, and writes an incident report in the PICERL format.
@@ -129,8 +131,9 @@ detected and the benign activity is not.
 
 ## Deployment
 
-The repository includes a `Dockerfile` and a Render Blueprint (`render.yaml`). On Render, create a
-Blueprint from the repository; the service builds from the Dockerfile and serves the dashboard.
+The live instance runs on Render at <https://triagedesk-f5tt.onrender.com/>. The repository includes
+a `Dockerfile` and a Render Blueprint (`render.yaml`). On Render, create a Blueprint from the
+repository; the service builds from the Dockerfile and serves the dashboard.
 Free instances sleep when idle and take about a minute to wake.
 
 ## Project structure

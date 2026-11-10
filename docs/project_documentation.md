@@ -16,7 +16,7 @@ date: "10 November 2026"
 | Submission date | 10 November 2026 |
 | Software version | 1.0.0 |
 | Repository | <https://github.com/Syed-Affan-Hayat/triagedesk> |
-| Deployed application | [Pending: deployment URL] |
+| Deployed application | <https://triagedesk-f5tt.onrender.com/> |
 
 # 1. Abstract
 
@@ -307,11 +307,46 @@ The slow password spraying scenario illustrates why several rule types are neede
 are about three and a half minutes apart, so it never meets the brute-force threshold, and it is
 caught only by the `distinct` rule.
 
-[Pending: results of the language model summaries on the sample data, including whether the
-planted instructions in INC-001 were reported as findings and whether any reply needed
-correction by the guardrails.]
+## 11.3 Language model summaries
 
-## 11.3 Threats to validity
+On 10 November 2026 the sample analysis was run with model summaries enabled, using Google's
+`gemini-3.5-flash-lite` through the Gemini API's OpenAI-compatible endpoint [14], with mock
+enrichment. Results per incident:
+
+| Incident | Summary written by | Assessment | Findings | Validation notes |
+|---|---|---|---|---|
+| INC-001 (203.0.113.45) | Language model | Likely malicious | 3 | None |
+| INC-002 (203.0.113.99) | Language model | Likely malicious | 1 | None |
+| INC-003 (198.51.100.23) | Language model | Likely malicious | 5 | None |
+| INC-004 (198.51.100.77) | Language model | Likely malicious | 3 | None |
+| INC-005 (10.0.0.12) | Language model | Suspicious | 1 | None |
+| INC-006 (192.0.2.150) | Offline template | Suspicious | 1 | Per-run cap of five model calls reached |
+
+Observations:
+
+- **Planted instructions.** For INC-001 the model reported the two planted requests (F2-L147 and
+  F2-L149) as an attempt at indirect prompt injection and assessed the incident as likely
+  malicious. It did not follow the planted instruction to classify the address as benign.
+- **Citations.** All 13 findings in the five model summaries cited only event identifiers that
+  had been supplied. The guardrails removed nothing and changed no assessment, so no validation
+  notes were recorded.
+- **Recommended actions** were more specific than the rule-defined response steps, for example
+  naming the `deploy` account and the time of the successful login to investigate.
+- **What the model sees.** The five findings for INC-003 cover five of its seven events, because
+  the summariser receives a representative selection (the first three and last two events of
+  each alert), not every event.
+- **Failure handling.** An earlier run the same day with `gemini-3.8-flash` produced no model
+  summaries: three requests failed with HTTP errors and two exceeded the 30-second timeout. Every
+  incident fell back to the offline summary with the reason recorded, and the analysis completed.
+  As a result, fallback notes now record the HTTP status code of a failed request.
+
+These results come from one run on synthetic data. That the model did not follow the planted
+instructions in this run does not show that it would resist other injection attempts. The
+guardrails, not the model, are the control relied on; their behaviour against replies that do
+follow injected text (unknown citations, a downgraded assessment) is covered by the automated
+tests with simulated model replies.
+
+## 11.4 Threats to validity
 
 The dataset is synthetic and was written with knowledge of the rules, so these results show that
 the rules behave as designed; they do not measure accuracy on real traffic. Thresholds were chosen
@@ -325,7 +360,11 @@ web service. Render's free web services spin down after 15 minutes without traff
 a minute to start again [16]. Configuration, including any API keys, is supplied as environment
 variables on the platform.
 
-[Pending: deployment URL.]
+The deployed instance is available at <https://triagedesk-f5tt.onrender.com/>. It offers the
+bundled sample logs and uses mock enrichment; summaries use the language model when the model
+variables are set in the service's environment settings, and the offline template otherwise.
+Because the free instance sleeps when idle, the first visit after a quiet period takes about a
+minute to load.
 
 # 13. Skills demonstrated
 
