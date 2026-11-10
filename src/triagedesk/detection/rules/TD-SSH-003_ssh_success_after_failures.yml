@@ -1,0 +1,25 @@
+id: TD-SSH-003
+title: Successful SSH login after repeated failures
+description: >
+  A source address that failed SSH authentication repeatedly then logged in successfully.
+  This is the strongest signal in the rule set that guessing worked and an account may be
+  compromised.
+source: ssh
+severity: critical
+techniques: [T1110.001, T1078]
+type: sequence
+filter:
+  - field: action
+    equals: ssh_failed
+then:
+  - field: action
+    equals: ssh_success
+group_by: src_ip
+threshold: 5
+window_seconds: 900
+false_positives:
+  - A legitimate user who mistyped a password several times before getting it right.
+response:
+  - Treat the account as compromised until proven otherwise; disable it or reset its credentials.
+  - Terminate active sessions for the account and review commands run after the login.
+  - Preserve the host's logs before making further changes.

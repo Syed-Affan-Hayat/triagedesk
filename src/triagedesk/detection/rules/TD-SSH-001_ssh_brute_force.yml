@@ -1,0 +1,22 @@
+id: TD-SSH-001
+title: SSH brute force from a single source
+description: >
+  One source address failed SSH authentication many times in a short period, which is the
+  pattern of automated password guessing against one or more accounts.
+source: ssh
+severity: high
+techniques: [T1110.001]
+type: threshold
+filter:
+  - field: action
+    equals: ssh_failed
+group_by: src_ip
+threshold: 5
+window_seconds: 300
+false_positives:
+  - A user or script repeatedly retrying with an expired password.
+  - A monitoring probe configured with wrong credentials.
+response:
+  - Block the source address at the firewall or with fail2ban while the alert is investigated.
+  - Check whether any login from this address succeeded (see rule TD-SSH-003).
+  - Enforce key-based SSH authentication and disable password logins where possible.

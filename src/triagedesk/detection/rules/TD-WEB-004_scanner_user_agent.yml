@@ -1,0 +1,19 @@
+id: TD-WEB-004
+title: Known security scanner user agent
+description: >
+  The request's User-Agent header names a well-known scanning or exploitation tool. Attackers
+  can change this header, so its absence proves nothing, but its presence is a clear signal.
+source: web
+severity: low
+techniques: [T1595.002]
+type: match
+filter:
+  - field: fields.user_agent
+    regex: |-
+      (?i)\b(sqlmap|nikto|nmap|masscan|zgrab|gobuster|dirbuster|wfuzz|ffuf|feroxbuster|nuclei|wpscan|acunetix|openvas)\b
+group_by: src_ip
+false_positives:
+  - Authorised vulnerability scans; check the scan schedule before escalating.
+response:
+  - Confirm whether an authorised scan was scheduled for this time.
+  - Correlate with the other web alerts for the same source address.

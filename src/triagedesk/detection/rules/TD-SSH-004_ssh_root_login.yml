@@ -1,0 +1,20 @@
+id: TD-SSH-004
+title: Direct SSH login as root
+description: >
+  The root account logged in over SSH. Direct root logins remove individual accountability
+  and are disabled by most hardening baselines.
+source: ssh
+severity: high
+techniques: [T1078.003]
+type: match
+filter:
+  - field: action
+    equals: ssh_success
+  - field: user
+    equals: root
+group_by: src_ip
+false_positives:
+  - An approved break-glass procedure or automation that still uses root.
+response:
+  - Confirm with the system owner whether the login was expected.
+  - Set PermitRootLogin to no in sshd_config and use named accounts with sudo.

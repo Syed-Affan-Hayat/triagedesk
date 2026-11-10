@@ -1,0 +1,20 @@
+id: TD-WEB-001
+title: SQL injection attempt
+description: >
+  A request contained SQL syntax commonly used to alter a database query, such as a UNION
+  SELECT clause, a tautology like OR 1=1, or a time-delay function.
+source: web
+severity: high
+techniques: [T1190]
+type: match
+filter:
+  - field: fields.path_decoded
+    regex: |-
+      (?i)(\bunion\b[\s/*]+(all[\s/*]+)?select\b|'\s*or\s*'?\d*'?\s*=\s*'?\d|\bor\s+1\s*=\s*1\b|\bsleep\s*\(\s*\d+\s*\)|\bbenchmark\s*\(|information_schema|;\s*drop\s+table|\bwaitfor\s+delay\b|\b(extractvalue|updatexml)\s*\()
+group_by: src_ip
+false_positives:
+  - Search forms or APIs that legitimately accept SQL-like text, such as a database tutorial site.
+response:
+  - Check the response codes and sizes for these requests; a 200 with an unusually large body may mean data was returned.
+  - Review the targeted endpoint for parameterised queries.
+  - Block the source address at the web application firewall.

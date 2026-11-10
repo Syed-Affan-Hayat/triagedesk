@@ -1,0 +1,19 @@
+id: TD-WEB-002
+title: Cross-site scripting attempt
+description: >
+  A request contained HTML or JavaScript that would run in a visitor's browser if the
+  application reflected it without encoding, such as a script tag or an event handler.
+source: web
+severity: medium
+techniques: [T1190]
+type: match
+filter:
+  - field: fields.path_decoded
+    regex: |-
+      (?i)(<\s*script\b|javascript\s*:|\bon(error|load|mouseover|focus|click)\s*=|<\s*(img|svg|iframe|body)\b[^>]*\bon\w+\s*=|document\.cookie)
+group_by: src_ip
+false_positives:
+  - Content management systems where editors legitimately submit HTML.
+response:
+  - Test whether the targeted page reflects the parameter without output encoding.
+  - Confirm a Content-Security-Policy header is set.

@@ -1,0 +1,20 @@
+id: TD-WEB-003
+title: Path traversal or sensitive file probe
+description: >
+  A request tried to step outside the web root with ../ sequences or asked for files that
+  should never be served, such as /etc/passwd, .env or the .git directory.
+source: web
+severity: high
+techniques: [T1190, T1083]
+type: match
+filter:
+  - field: fields.path_decoded
+    regex: |-
+      (?i)(\.\./|\.\.\\|/etc/(passwd|shadow)|/proc/self/environ|/\.env\b|/\.git/|/\.htaccess|/wp-config\.php|/\.aws/credentials|/server-status)
+group_by: src_ip
+false_positives:
+  - Internal security scans run by the organisation itself.
+response:
+  - Check whether any of these requests returned 200; if so, treat the file as disclosed.
+  - Rotate any secrets stored in files that were served.
+  - Deny access to hidden files and directories in the web server configuration.

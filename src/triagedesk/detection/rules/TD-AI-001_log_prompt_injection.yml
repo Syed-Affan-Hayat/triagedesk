@@ -1,0 +1,20 @@
+id: TD-AI-001
+title: Prompt injection text in log data
+description: >
+  Attacker-controlled log content contains instructions aimed at an AI assistant, such as
+  "ignore previous instructions". Tools that pass logs to a language model can be steered by
+  such text, so the attempt is raised as an alert and the text is never followed.
+source: any
+severity: medium
+techniques: [AML.T0051.001]
+type: match
+filter:
+  - field: fields.search_text
+    regex: |-
+      (?i)(ignore\s+(all\s+|any\s+)?(the\s+)?(previous|prior|above|earlier)\s+(instructions|prompts|rules)|disregard\s+(all\s+|the\s+)?(previous|prior|above)\s+\w+|you\s+are\s+now\s+(a|an|in)\b|(reveal|print|show)\s+(your|the)\s+(system\s+)?(prompt|instructions)|(classify|mark|label)\s+(this(\s+\w+)?|it|the\s+\w+)\s+as\s+(benign|safe|harmless|a\s+false\s+positive))
+group_by: src_ip
+false_positives:
+  - Security researchers or staff testing the triage tool itself.
+response:
+  - Treat the source as hostile; the text was written to influence automated analysis.
+  - Review the AI summary for this incident against the raw evidence before acting on it.

@@ -1,0 +1,20 @@
+id: TD-WEB-005
+title: Burst of not-found responses from one source
+description: >
+  One source received many 404 responses in under a minute, which is how directory and
+  file brute forcing tools look from the server side.
+source: web
+severity: medium
+techniques: [T1595.003]
+type: threshold
+filter:
+  - field: fields.status_code
+    equals: 404
+group_by: src_ip
+threshold: 20
+window_seconds: 60
+false_positives:
+  - A broken link on a busy page, or a crawler following outdated links.
+response:
+  - Review which paths returned 200 during the burst; those are what the tool discovered.
+  - Rate-limit or block the source address.
