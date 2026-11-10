@@ -1,0 +1,46 @@
+[project]
+name = "triagedesk"
+version = "1.0.0"
+description = "Evidence-grounded triage of SSH and web server logs, with MITRE ATT&CK mapping and guarded AI summaries"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Syed Affan Hayat" }]
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml>=6.0",
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+app = ["streamlit>=1.40,<2", "pandas>=2.0"]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[project.scripts]
+triagedesk = "triagedesk.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+triagedesk = ["detection/rules/*.yml", "enrichment/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+# Test fixtures keep each log line on one line so they read exactly like real log entries.
+"tests/*" = ["E501"]

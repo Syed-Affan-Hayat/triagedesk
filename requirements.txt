@@ -1,0 +1,8 @@
+# Runtime dependencies for the dashboard and the command-line tool.
+# Install with: pip install -r requirements.txt
+pyyaml>=6.0
+requests>=2.31
+python-dotenv>=1.0
+streamlit>=1.40,<2
+pandas>=2.0
+-e .
