@@ -1,0 +1,12 @@
+{
+  "description": "Mock reputation records for the bundled sample logs. All addresses are in the RFC 5737 documentation ranges, so no real service holds data for them. Values are invented for demonstration and are labelled as mock data wherever they are shown.",
+  "records": {
+    "203.0.113.45": {"abuse_score": 100, "total_reports": 1287, "country": "ZZ", "isp": "Mock Hosting Ltd"},
+    "198.51.100.23": {"abuse_score": 87, "total_reports": 342, "country": "ZZ", "isp": "Mock VPS Provider"},
+    "198.51.100.77": {"abuse_score": 64, "total_reports": 58, "country": "ZZ", "isp": "Mock Cloud Inc"},
+    "203.0.113.99": {"abuse_score": 92, "total_reports": 611, "country": "ZZ", "isp": "Mock Hosting Ltd"},
+    "192.0.2.150": {"abuse_score": 12, "total_reports": 3, "country": "ZZ", "isp": "Mock Residential ISP"},
+    "192.0.2.10": {"abuse_score": 0, "total_reports": 0, "country": "ZZ", "isp": "Mock Residential ISP"},
+    "192.0.2.11": {"abuse_score": 0, "total_reports": 0, "country": "ZZ", "isp": "Mock Residential ISP"}
+  }
+}
